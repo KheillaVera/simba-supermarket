@@ -1,0 +1,173 @@
+/* --- SIMBA SUPERMARKET PREMIUM THEME --- */
+:root {
+  --primary-gold: #FFD700;
+  --deep-black: #0f0f0f;
+  --card-bg: #1e1e1e;
+  --text-white: #ffffff;
+  --text-gray: #a0a0a0;
+  --accent-gradient: linear-gradient(45deg, #FFD700, #FFA500);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--deep-black);
+  color: var(--text-white);
+  font-family: 'Poppins', sans-serif; /* Recommended: Import Poppins from Google Fonts */
+  line-height: 1.6;
+}
+
+/* --- NAVIGATION --- */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 5%;
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  color: var(--primary-gold);
+  font-weight: 500;
+}
+
+/* --- SEARCH BAR --- */
+.search-bar-wrapper {
+  margin: -50px auto 40px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+}
+
+.search-bar-wrapper input {
+  width: 100%;
+  padding: 20px 30px;
+  border-radius: 100px;
+  border: none;
+  background: #2a2a2a;
+  color: white;
+  font-size: 1.1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transition: 0.3s;
+}
+
+.search-bar-wrapper input:focus {
+  outline: 2px solid var(--primary-gold);
+  background: #333;
+}
+
+/* --- PRODUCT GRID --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+  padding: 0 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* --- THE CARD --- */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  border-color: #555;
+}
+
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: 0.5s;
+}
+
+.card:hover img {
+  transform: scale(1.05);
+}
+
+.card-info {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.card .price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-gold);
+  margin-bottom: 15px;
+}
+
+/* --- ADD TO CART BUTTON --- */
+.add-btn {
+  width: 100%;
+  background: var(--accent-gradient);
+  border: none;
+  padding: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 0 0 12px 12px;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  filter: brightness(1.1);
+  letter-spacing: 1px;
+}
+
+/* --- FOOTER --- */
+footer {
+  margin-top: 100px;
+  padding: 50px 5%;
+  background: #050505;
+  text-align: center;
+  border-top: 1px solid #222;
+  color: var(--text-gray);
+}
