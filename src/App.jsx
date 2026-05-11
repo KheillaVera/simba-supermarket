@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -16,13 +16,29 @@ function App() {
   // Step 8: search query — lifted state
   const [query, setQuery] = useState("");
 
-  // Step 13: cart items array — [{ id, name, price, qty }]
-  const [cart, setCart] = useState([]);
+  // Step 14: hydrate cart from localStorage on first render.
+  // The function passed to useState runs once — if the key exists we parse
+  // it, otherwise we start with an empty array.
+  const [cart, setCart] = useState(() => {
+    try {
+      const stored = localStorage.getItem("simba-cart");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      // JSON.parse can throw if the value is somehow corrupted
+      return [];
+    }
+  });
 
   // Step 13: modal open/close
   const [cartOpen, setCartOpen] = useState(false);
 
-  // Step 13: add to cart — if item exists bump qty, else push new entry
+  // Step 14: keep localStorage in sync every time cart changes.
+  // useEffect re-runs whenever [cart] changes — covers add, remove, qty bump.
+  useEffect(() => {
+    localStorage.setItem("simba-cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // Step 13: add to cart — bump qty if exists, else push new entry
   function handleAddToCart(product) {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
@@ -33,7 +49,10 @@ function App() {
             : item
         );
       }
-      return [...prev, { id: product.id, name: product.name, price: product.price, qty: 1 }];
+      return [
+        ...prev,
+        { id: product.id, name: product.name, price: product.price, qty: 1 },
+      ];
     });
   }
 
@@ -86,7 +105,7 @@ function App() {
 
       <Footer />
 
-      {/* Step 13 — modal rendered via portal inside CartModal, only when open */}
+      {/* Step 13 — modal rendered via portal, only mounted when open */}
       {cartOpen && (
         <CartModal cart={cart} onClose={() => setCartOpen(false)} />
       )}
