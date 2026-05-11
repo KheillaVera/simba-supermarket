@@ -1,7 +1,7 @@
 function Header() {
   return (
     <header>
-      <h2>Simba Supermarket</h2>
+      <h2>Simba Supermarket </h2>
     </header>
   );
 }

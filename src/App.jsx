@@ -9,18 +9,18 @@ import "./App.css";
 import products from "./data/products";
 
 function App() {
-  // Step 6: featured toggle (still optional from previous step)
+  // Step 6: featured toggle
   const [showSpecial, setShowSpecial] = useState(false);
 
-  // Step 8: search state
+  // Step 8: search query — lifted state
   const [query, setQuery] = useState("");
 
-  // Step 7: add to cart handler (stub)
+  // Step 7: add to cart handler
   function handleAddToCart(product) {
     console.log("Added:", product.name);
   }
 
-  // Step 8: filtering
+  // Step 8: filter products by name, case-insensitive
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -30,12 +30,14 @@ function App() {
       <Header />
       <Hero />
 
-      {/* Step 6 button */}
-      <button onClick={() => setShowSpecial(!showSpecial)}>
-        Show Today's Special
+      {/* Step 6 — Today's Special toggle */}
+      <button
+        className="special-btn"
+        onClick={() => setShowSpecial(!showSpecial)}
+      >
+        {showSpecial ? "Hide Today's Special" : "Show Today's Special"}
       </button>
 
-      {/* Step 6 conditional product */}
       {showSpecial && (
         <ProductList
           products={[products[0]]}
@@ -43,14 +45,23 @@ function App() {
         />
       )}
 
-      {/* Step 8 search */}
+      {/* Step 8 — search with lifted state */}
       <SearchBar value={query} onChange={setQuery} />
 
-      {/* Step 9 product catalog */}
-      <ProductList
-        products={filteredProducts}
-        onAddToCart={handleAddToCart}
-      />
+      {/* Step 10 — empty state when filter has no matches */}
+      {filteredProducts.length === 0 ? (
+        <div className="empty">
+          <p>No products match your search.</p>
+          <button className="clear-btn" onClick={() => setQuery("")}>
+            Clear search
+          </button>
+        </div>
+      ) : (
+        <ProductList
+          products={filteredProducts}
+          onAddToCart={handleAddToCart}
+        />
+      )}
 
       <Footer />
     </>

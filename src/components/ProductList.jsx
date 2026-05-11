@@ -5,7 +5,7 @@ function ProductList({ products, onAddToCart }) {
     <div className="product-grid">
       {products.map((product) => (
         <ProductCard
-          key={product.id}
+          key={product.id}        // ✅ always id, never index
           product={product}
           onAddToCart={onAddToCart}
         />
