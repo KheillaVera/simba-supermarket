@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import ProductList from "./components/ProductList";
+import CartModal from "./components/CartModal";
 import "./App.css";
 import products from "./data/products";
 
@@ -15,9 +16,25 @@ function App() {
   // Step 8: search query — lifted state
   const [query, setQuery] = useState("");
 
-  // Step 7: add to cart handler
+  // Step 13: cart items array — [{ id, name, price, qty }]
+  const [cart, setCart] = useState([]);
+
+  // Step 13: modal open/close
+  const [cartOpen, setCartOpen] = useState(false);
+
+  // Step 13: add to cart — if item exists bump qty, else push new entry
   function handleAddToCart(product) {
-    console.log("Added:", product.name);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        );
+      }
+      return [...prev, { id: product.id, name: product.name, price: product.price, qty: 1 }];
+    });
   }
 
   // Step 8: filter products by name, case-insensitive
@@ -25,9 +42,13 @@ function App() {
     p.name.toLowerCase().includes(query.toLowerCase())
   );
 
+  // Step 13: total item count for the header badge
+  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
   return (
     <>
-      <Header />
+      {/* Step 13 — pass cartCount + open handler to Header */}
+      <Header cartCount={cartCount} onCartOpen={() => setCartOpen(true)} />
       <Hero />
 
       {/* Step 6 — Today's Special toggle */}
@@ -64,6 +85,11 @@ function App() {
       )}
 
       <Footer />
+
+      {/* Step 13 — modal rendered via portal inside CartModal, only when open */}
+      {cartOpen && (
+        <CartModal cart={cart} onClose={() => setCartOpen(false)} />
+      )}
     </>
   );
 }
