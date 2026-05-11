@@ -592,3 +592,87 @@ footer p {
 }
 
 footer p::before { content: '🦁 '; }
+
+
+/* =============================================
+   SPINNER (Step 15)
+   ============================================= */
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 16px;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(22, 92, 66, 0.15);
+  border-top-color: var(--green-mid);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ios-label2);
+  letter-spacing: -0.01em;
+}
+
+
+/* =============================================
+   ERROR STATE (Step 15)
+   ============================================= */
+.error-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 10px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 2.8rem;
+  margin-bottom: 4px;
+}
+
+.error-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ios-label);
+  letter-spacing: -0.02em;
+}
+
+.error-msg {
+  font-size: 0.82rem;
+  color: var(--ios-label2);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  margin-top: 8px;
+  padding: 11px 28px;
+  background: var(--green-mid);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+  box-shadow: 0 4px 14px rgba(22, 92, 66, 0.30);
+}
+
+.retry-btn:hover  { background: var(--green-light); transform: translateY(-1px); }
+.retry-btn:active { transform: scale(0.97); }

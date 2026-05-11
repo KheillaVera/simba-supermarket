@@ -7,7 +7,10 @@ import SearchBar from "./components/SearchBar";
 import ProductList from "./components/ProductList";
 import CartModal from "./components/CartModal";
 import "./App.css";
-import products from "./data/products";
+
+// Step 15 — paste your mockapi.io endpoint here after creating it
+// e.g. "https://64a1b2c3d.mockapi.io/api/v1/products"
+const API_URL = "https://YOUR_ID.mockapi.io/api/v1/products";
 
 function App() {
   // Step 6: featured toggle
@@ -16,15 +19,12 @@ function App() {
   // Step 8: search query — lifted state
   const [query, setQuery] = useState("");
 
-  // Step 14: hydrate cart from localStorage on first render.
-  // The function passed to useState runs once — if the key exists we parse
-  // it, otherwise we start with an empty array.
+  // Step 14: cart — hydrated from localStorage
   const [cart, setCart] = useState(() => {
     try {
       const stored = localStorage.getItem("simba-cart");
       return stored ? JSON.parse(stored) : [];
     } catch {
-      // JSON.parse can throw if the value is somehow corrupted
       return [];
     }
   });
@@ -32,8 +32,39 @@ function App() {
   // Step 13: modal open/close
   const [cartOpen, setCartOpen] = useState(false);
 
-  // Step 14: keep localStorage in sync every time cart changes.
-  // useEffect re-runs whenever [cart] changes — covers add, remove, qty bump.
+  // Step 15: three states for async data
+  const [products, setProducts]   = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
+
+  // Step 15: fetch products from mockapi on mount
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch(API_URL);
+
+        // fetch() doesn't throw on 4xx/5xx — check manually
+        if (!res.ok) {
+          throw new Error(`Server error: ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        // always stop the spinner whether it succeeded or failed
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []); // empty array = run once on mount only
+
+  // Step 14: sync cart to localStorage on every change
   useEffect(() => {
     localStorage.setItem("simba-cart", JSON.stringify(cart));
   }, [cart]);
@@ -61,12 +92,72 @@ function App() {
     p.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Step 13: total item count for the header badge
+  // Step 13: total item count for header badge
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  // ── Render helpers ──────────────────────────────────────────
+
+  // Step 15: spinner while loading
+  function renderCatalog() {
+    if (loading) {
+      return (
+        <div className="spinner-wrap">
+          <div className="spinner" aria-label="Loading products…" />
+          <p className="spinner-text">Loading fresh products…</p>
+        </div>
+      );
+    }
+
+    // Step 15: friendly error state with retry button
+    if (error) {
+      return (
+        <div className="error-wrap">
+          <p className="error-icon">🛒</p>
+          <p className="error-title">Couldn't load products</p>
+          <p className="error-msg">{error}</p>
+          <button
+            className="retry-btn"
+            onClick={() => {
+              setError(null);
+              setLoading(true);
+              fetch(API_URL)
+                .then((r) => {
+                  if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+                  return r.json();
+                })
+                .then(setProducts)
+                .catch((e) => setError(e.message))
+                .finally(() => setLoading(false));
+            }}
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+
+    // Step 10: empty search state
+    if (filteredProducts.length === 0) {
+      return (
+        <div className="empty">
+          <p>No products match your search.</p>
+          <button className="clear-btn" onClick={() => setQuery("")}>
+            Clear search
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <ProductList
+        products={filteredProducts}
+        onAddToCart={handleAddToCart}
+      />
+    );
+  }
 
   return (
     <>
-      {/* Step 13 — pass cartCount + open handler to Header */}
       <Header cartCount={cartCount} onCartOpen={() => setCartOpen(true)} />
       <Hero />
 
@@ -78,34 +169,21 @@ function App() {
         {showSpecial ? "Hide Today's Special" : "Show Today's Special"}
       </button>
 
-      {showSpecial && (
+      {showSpecial && !loading && !error && products.length > 0 && (
         <ProductList
           products={[products[0]]}
           onAddToCart={handleAddToCart}
         />
       )}
 
-      {/* Step 8 — search with lifted state */}
+      {/* Step 8 — search */}
       <SearchBar value={query} onChange={setQuery} />
 
-      {/* Step 10 — empty state when filter has no matches */}
-      {filteredProducts.length === 0 ? (
-        <div className="empty">
-          <p>No products match your search.</p>
-          <button className="clear-btn" onClick={() => setQuery("")}>
-            Clear search
-          </button>
-        </div>
-      ) : (
-        <ProductList
-          products={filteredProducts}
-          onAddToCart={handleAddToCart}
-        />
-      )}
+      {/* Step 15 — loading / error / catalog */}
+      {renderCatalog()}
 
       <Footer />
 
-      {/* Step 13 — modal rendered via portal, only mounted when open */}
       {cartOpen && (
         <CartModal cart={cart} onClose={() => setCartOpen(false)} />
       )}

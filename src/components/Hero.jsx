@@ -4,8 +4,8 @@ function Hero() {
       <h1>Karibu Simba Supermarket!</h1>
       <p>Fresh groceries, delivered across Kigali.</p>
       <img
-        src="https://placehold.co/600x300"
-        alt="Supermarket banner"
+        src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=500&fit=crop"
+        alt="Fresh produce at Simba Supermarket"
       />
     </div>
   );
